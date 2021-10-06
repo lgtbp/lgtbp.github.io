@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Hello</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="libs/h5plus/css/mui.min.css">
+	</head>
+
+	<body>
+		<div class="mui-inner-wrap">
+			<header class="mui-bar mui-bar-nav">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">管理</h1>
+			</header>
+			<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper">
+
+				<ul id="OA_task_2" class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+
+					<div id="mytl"> </div>
+
+				</ul>
+				<ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+					<p>注册码</p>
+					<div id="signcodes"> </div>
+				</ul>
+
+				<button type="button" class="mui-btn mui-btn-primary mui-btn-outlined"
+					onclick="scode_btn(1)">重新生成注册码</button>
+				<button type="button" class="mui-btn mui-btn-primary mui-btn-outlined"
+					onclick="scode_btn(0)">补齐注册码</button>
+
+			</div>
+			<div class="mui-off-canvas-backdrop"></div>
+		</div>
+
+		<script src="libs/jquery/jquery.min.js"></script>
+		<script src="libs/h5plus/js/mui.min.js"></script>
+		<script>
+			mui.init({
+				swipeBack: true //启用右滑关闭功能
+			});
+
+			(function($) {
+				var btnArray = ['确认', '取消'];
+				//第二个demo，向左拖拽后显示操作图标，释放后自动触发的业务逻辑
+				$('#OA_task_2').on('slideleft', '.mui-table-view-cell', function(event) {
+					var elem = this;
+					// mui.confirm('确认删除该条记录？', 'Hello MUI', btnArray, function (e) {
+					//   if (e.index == 0) {
+					//     elem.parentNode.removeChild(elem);
+					//   } else {
+					//     setTimeout(function () {
+					//       $.swipeoutClose(elem);
+					//     }, 0);
+					//   }
+					// });
+				});
+
+			})(mui);
+
+			window.onload = function() {
+				$.ajax({
+					url: "https://47.107.74.49:8080/users.api", // 获取自己系统后台用户信息接口
+					data: {},
+					type: "POST",
+					dataType: "json",
+					success: function(data) {
+						if (data) {
+							console.log("data num:" + data.num)
+							var html_str = "";
+							if (data.num == 0) {
+								mui.toast("没数据");
+								return
+							}
+							for (let index = data.num - 1; index > -1; index--) {
+								html_str +=
+									"<li class=\"mui-table-view-cell\">\
+									<div class=\"mui-slider-right mui-disabled\">\
+										<button class=\"mui-btn mui-btn-grey mui-icon mui-icon-trash\" onclick=\"move_btn(0," + index + ")\"   >删除</button>\
+										<button class=\"mui-btn mui-btn-yellow mui-icon mui-icon-upload\" onclick=\"move_btn(1," + index + ")\"  >分享</button>\
+										<button class=\"mui-btn mui-btn-red mui-icon mui-icon-settings\" onclick=\"move_btn(2," + index + ")\"  >设置</button>\
+									</div>\
+									<div class=\"mui-table mui-slider-handle\">\
+										<div class=\"mui-table-cell mui-col-xs-10\">\
+											<h3>" + data.user[index].id + "," + data.user[index].lev + "," + data.user[index].username + "," + data
+									.user[index].password + "</h3>" +
+									"</div>\
+									</div>\
+								</li>"
+							}
+							document.getElementById("mytl").innerHTML = html_str;
+							mui.toast("更新数据");
+						}
+					},
+					error: function(data) {
+						mui.toast("无权限操作");
+					}
+				});
+
+
+				get_signcode()
+			}
+
+			function scode_btn(type) {
+				$.ajax({
+					url: "https://47.107.74.49:8080/msigncode.api?type=" + type, // 获取自己系统后台用户信息接口
+					data: {},
+					type: "POST",
+					dataType: "json",
+					success: function(data) {
+						if (data) {
+							if (data.code == 200) {
+								mui.toast("成功");
+								location.reload();
+								return
+							}
+							mui.toast("失败");
+						}
+					},
+					error: function(data) {
+						mui.toast("无权限操作");
+					}
+				});
+			}
+
+			function get_signcode() {
+				$.ajax({
+					url: "https://47.107.74.49:8080/signcode.api", // 获取自己系统后台用户信息接口
+					data: {},
+					type: "POST",
+					dataType: "json",
+					success: function(data) {
+						if (data) {
+							console.log("data num:" + data.num)
+							var html_str = "";
+							if (data.num == 0) {
+								mui.toast("没数据");
+								return
+							}
+							for (let index = 0; index < data.num; index++) {
+								html_str += "<h3>|    " + index + "  |  " + data.code[index] + "  |</h3>"
+							}
+							document.getElementById("signcodes").innerHTML = html_str;
+							mui.toast("更新signcode数据");
+						}
+					},
+					error: function(data) {
+						mui.toast("无权限操作");
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

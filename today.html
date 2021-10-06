@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>timeline now</title>
+    <script src="libs/jquery/jquery.min.js"></script>
+    <script src="libs/js/conversion.js"></script>
+    <link rel="stylesheet" type="text/css" href="libs/pell/pell.min.css">
+    <style type="text/css">
+        .float {
+            float: left;
+            width: 170px;
+            height: 170px;
+            overflow: hidden;
+            border: 1px solid #CCCCCC;
+            border-radius: 10px;
+            padding: 5px;
+            margin: 5px;
+        }
+
+        img {
+            position: relative;
+        }
+
+        .result {
+            width: 170px;
+            height: 170px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        #id_uplist {
+            display: none;
+        }
+
+        .delete {
+            width: 170px;
+            height: 170px;
+            position: absolute;
+            text-align: center;
+            line-height: 170px;
+            z-index: 10;
+            font-size: 30px;
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #777;
+            opacity: 0;
+            transition-duration: 0.7s;
+            -webkit-transition-duration: 0.7s;
+        }
+
+        .delete:hover {
+            cursor: pointer;
+            opacity: 1;
+        }
+
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        input {
+            font-size: 24px;
+            border: 1px solid #ccc;
+            padding: 7px 0px;
+            border-radius: 3px;
+            padding-left: 5px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+            -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+            -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s
+        }
+
+        input:focus {
+            font-size: 24px;
+            border-color: #66afe9;
+            outline: 0;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6)
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="#" onClick="javascript:history.back(-1);" class="button" style="width:30px">&lt;</a>
+    <button class="button" onclick="SelsctClick()">重选</button>
+    <button class="button" onclick="AddClick()">追加</button>
+    <button class="button" id="PictureNumber">0张</button>
+    <button class="button" onclick="checkForm()">保存</button>
+    <button class="button">设置</button>
+    <div></div>
+    <progress id="up_progress" style="width:100%;height:15px;" value="100" max="100"></progress>
+    <input type="text" style="width:99%;height:35px;" placeholder="主题" id="Title_id">
+
+    <div id="editor" class="pell"></div>
+
+    <input id="id_uplist" type="file" name="uploadFile" accept="image/gif,image/jpeg,image/jpg,image/png,image/bmp"
+        multiple="multiple" onchange="readFile()" />
+
+    <script src="libs/pell/pell.min.js"></script>
+    <script>
+        var mypics = new Array();
+        var PictureNumber = 0,
+            upnum = 0;
+        var html_str = ""
+
+        var editor = window.pell.init({
+            element: document.getElementById('editor'),
+            defaultParagraphSeparator: 'p',
+            onChange: function (html) {
+                html_str = html
+            }
+        })
+
+        $(document).ready(function () {
+            var time = new Date();
+            var day = ("0" + time.getDate()).slice(-2);
+            var month = ("0" + (time.getMonth() + 1)).slice(-2);
+            var today = time.getFullYear() + "-" + (month) + "-" + (day);
+            $('#date_info').val(today);
+        })
+
+        function AddClick() {
+            var oInput = document.getElementById("id_uplist");
+            oInput.value = ""; // 先将oInput值清空，否则选择图片与上次相同时change事件不会触发
+            oInput.click();
+        }
+
+        function SelsctClick() {
+            var oInput = document.getElementById("id_uplist");
+            oInput.value = ""; // 先将oInput值清空，否则选择图片与上次相同时change事件不会触发
+            $('.float').remove(); //清空已选图片
+            PictureNumber = 0;
+            oInput.click();
+        }
+
+        function checkForm() {
+            upnum = 0;
+            if (0 == PictureNumber)
+                save_btn()
+            var upobj = document.getElementById('id_uplist');
+            var formData = new FormData();
+            var up_prog = document.getElementById('up_progress');
+            up_prog.value = 0;
+            up_prog.max = PictureNumber;
+            for (var i = 0; i < upobj.files.length; i++) {
+                imageConversion.compressAccurately(upobj.files[i], {
+                    size: 80,    //The compressed image size is 100kb
+                    accuracy: 0.8,//the accuracy of image compression size,range 0.8-0.99,default 0.95;
+                    //this means if the picture size is set to 1000Kb and the
+                    //accuracy is 0.9, the image with the compression result
+                    //of 900Kb-1100Kb is considered acceptable;
+                    type: "image/jpeg",
+                    // width: 300,
+                    // height: 200,
+                    orientation: 0,
+                    scale: 0.28,
+                }).then(zip_pic => {
+                    formData = new FormData();
+                    formData.append("filename", zip_pic.name);
+                    formData.append("filedata", zip_pic);
+                    $.ajax({
+                        url: 'https://47.107.74.49:8080/upic.api',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: formData,
+                        contentType: false,
+                        processData: false
+                    })
+                        .done(data => {
+                            mypics[upnum] = data.msg
+                            upnum++
+                            up_prog.value = upnum;
+                            if (upnum == PictureNumber)
+                                save_btn()
+                        })
+                        .fail(data => {
+                            console.log(data);
+                        });
+                })
+            }
+        }
+
+        function readFile() {
+            var input = document.getElementById("id_uplist");
+
+            var iLen = input.files.length;
+            PictureNumber += iLen;
+            document.getElementById("PictureNumber").innerHTML = PictureNumber + "张";
+            for (var i = 0; i < iLen; i++) {
+                if (!input['value'].match(/.jpg|.gif|.png|.jpeg|.bmp/i)) { //判断上传文件格式
+                    return alert("上传的图片格式不正确，请重新选择");
+                }
+                zip_pic = input.files[i]
+                var reader = new FileReader();
+                reader.readAsDataURL(zip_pic); //转成base64
+                reader.fileName = zip_pic.name;
+
+                reader.onload = function (e) {
+                    result = '<div class="delete">delete</div><div class="result"><img class="subPic" src="' +
+                        this.result + '" alt="' + this.fileName + '"/></div>';
+                    var div = document.createElement('div');
+                    div.innerHTML = result;
+                    div['className'] = 'float';
+                    document.getElementsByTagName('body')[0].appendChild(div); //插入dom树
+                    var img = div.getElementsByTagName('img')[0];
+                    img.onload = function () {
+                        var nowHeight = ReSizePic(this); //设置图片大小
+                        this.parentNode.style.display = 'block';
+                        var oParent = this.parentNode;
+                        if (nowHeight) {
+                            oParent.style.paddingTop = (oParent.offsetHeight - nowHeight) / 2 + 'px';
+                        }
+                    }
+                    div.onclick = function () {
+                        $(this).remove(); // 在页面中删除该图片元素
+                        PictureNumber -= 1;
+                        document.getElementById("PictureNumber").innerHTML = PictureNumber + "张图片";
+                    }
+                }
+            }
+        }
+
+        function ReSizePic(ThisPic) {
+            var RePicWidth = 165; //这里修改为您想显示的宽度值
+
+            var TrueWidth = ThisPic.width; //图片实际宽度
+            var TrueHeight = ThisPic.height; //图片实际高度
+
+            if (TrueWidth > TrueHeight) {
+                //宽大于高
+                var reWidth = RePicWidth;
+                ThisPic.width = reWidth;
+                //垂直居中
+                var nowHeight = TrueHeight * (reWidth / TrueWidth);
+                return nowHeight; //将图片修改后的高度返回，供垂直居中用
+            } else {
+                //宽小于高
+                var reHeight = RePicWidth;
+                ThisPic.height = reHeight;
+                return reHeight;
+            }
+        }
+        function getFormatDate() {
+            var nowDate = new Date();
+            var year = nowDate.getFullYear();
+            var month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;
+            var date = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
+            var hour = nowDate.getHours() < 10 ? "0" + nowDate.getHours() : nowDate.getHours();
+            var minute = nowDate.getMinutes() < 10 ? "0" + nowDate.getMinutes() : nowDate.getMinutes();
+            var second = nowDate.getSeconds() < 10 ? "0" + nowDate.getSeconds() : nowDate.getSeconds();
+            return "" + year + month + date + hour + ":" + minute + ":" + second;
+        }
+
+        function home_btn() {
+            console.log("home_btn");
+            window.location.href = "index.html";
+        }
+
+        function save_btn() {
+            for (let index = 0; index < PictureNumber; index++) {
+                html_str += '<img data-preview-src="" data-preview-group="1"  data-original="' + mypics[index] + '"/>'
+            }
+            var title_str = document.getElementById("Title_id").value
+            $.ajax({
+                url: "https://47.107.74.49:8080/savetd.api", // 获取自己系统后台用户信息接口
+                data: {
+                    "title": title_str,
+                    "datetime": getFormatDate(),
+                    "dnow": html_str,
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (data) {
+                        if (data.code == 200) { //判断返回值，这里根据的业务内容可做调整
+                            window.location.href = "./index.html"; //指向登录的页面地址
+                        } else {
+                            mui.toast("保存失败:" + data.msg); //显示登录失败的原因
+                            return false;
+                        }
+                    }
+                },
+                error: function (data) {
+                    mui.toast("保存失败:" + data.msg);
+                }
+            });
+        }
+    </script>
+
+</body>
+
+</html>
