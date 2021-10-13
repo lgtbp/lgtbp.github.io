@@ -310,7 +310,7 @@
 
             //console.log("id:" + uid)
             $.ajax({
-                url: "http://47.107.74.49:8081/msgset.api", // 获取自己系统后台用户信息接口
+                url: "http://47.107.74.49:8060/msgset.api", // 获取自己系统后台用户信息接口
                 type: "POST",
                 data: { "uid": uid, "data": updata },
                 dataType: "json",
@@ -344,7 +344,7 @@
         }
         function Logout_btn() {
             $.ajax({
-                url: "http://47.107.74.49:8081/msgget.api", // 获取自己系统后台用户信息接口
+                url: "http://47.107.74.49:8060/msgget.api", // 获取自己系统后台用户信息接口
                 type: "POST",
                 dataType: "json",
                 success: function (data) {
