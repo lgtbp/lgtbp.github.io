@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>zip文件格式 - lgtbp</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="lgtbp"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="lgtbp"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="Embedded Common Libraries"><meta property="og:type" content="blog"><meta property="og:title" content="zip文件格式"><meta property="og:url" content="http://example.com/essay/zip%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F/"><meta property="og:site_name" content="lgtbp"><meta property="og:description" content="Embedded Common Libraries"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:published_time" content="2020-12-31T16:00:01.000Z"><meta property="article:modified_time" content="2023-04-15T13:50:34.724Z"><meta property="article:author" content="lgtbp@126.com"><meta property="article:tag" content="嵌入式"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="http://example.com/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/essay/zip%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F/"},"headline":"zip文件格式","image":["http://example.com/img/og_image.png"],"datePublished":"2020-12-31T16:00:01.000Z","dateModified":"2023-04-15T13:50:34.724Z","author":{"@type":"Person","name":"lgtbp@126.com"},"publisher":{"@type":"Organization","name":"lgtbp","logo":{"@type":"ImageObject","url":"http://example.com/img/logo.svg"}},"description":"Embedded Common Libraries"}</script><link rel="canonical" href="http://example.com/essay/zip%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="lgtbp" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/lgtbp"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-12-31T16:00:01.000Z" title="2021-1-1 0:00:01">2021-01-01</time>发表</span><span class="level-item">8 分钟读完 (大约1125个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">zip文件格式</h1><div class="content"><h1 id="Embedded-Common-Libraries"><a href="#Embedded-Common-Libraries" class="headerlink" title="Embedded Common Libraries"></a>Embedded Common Libraries</h1><span id="more"></span>
+<h2 id="zip支持压缩算法"><a href="#zip支持压缩算法" class="headerlink" title="zip支持压缩算法"></a>zip支持压缩算法</h2><ul>
+<li>Store - implies no compression</li>
+<li>Shrink</li>
+<li>Reduction (This implies compression factors ranging from level 1 to level 4)</li>
+<li>Implode</li>
+<li>Deflate</li>
+<li>Deflat64</li>
+<li>BZIP2</li>
+<li>LZMA (EFS)</li>
+<li>WavPack</li>
+<li>PPMd version I, Rev 1</li>
+</ul>
+<h2 id="整体-ZIP-文件格式"><a href="#整体-ZIP-文件格式" class="headerlink" title="整体 ZIP 文件格式"></a>整体 ZIP 文件格式</h2><ul>
+<li>每个 Zip 文件的结构如下：</li>
+<li>Local File Header 1</li>
+<li>File Data 1</li>
+<li>Data Descriptor 1</li>
+<li>Local File Header 2</li>
+<li>File Data 2</li>
+<li>Data Descriptor 2</li>
+<li>….</li>
+<li>….</li>
+<li>Local File Header N</li>
+<li>File Data N</li>
+<li>Data Descriptor N</li>
+<li>Archive Decryption Header</li>
+<li>Archive Extra Data Record</li>
+<li>Central Directory</li>
+</ul>
+<h2 id="压缩文件条目"><a href="#压缩文件条目" class="headerlink" title="压缩文件条目"></a>压缩文件条目</h2><h4 id="ZIP-文件中的条目一个接一个地排列，其中每个条目包括："><a href="#ZIP-文件中的条目一个接一个地排列，其中每个条目包括：" class="headerlink" title="ZIP 文件中的条目一个接一个地排列，其中每个条目包括："></a>ZIP 文件中的条目一个接一个地排列，其中每个条目包括：</h4><ul>
+<li>本地文件头</li>
+<li>可选额外数据字段</li>
+<li>用户数据（可选压缩&#x2F;可选加密）</li>
+</ul>
+<h4 id="本地文件头"><a href="#本地文件头" class="headerlink" title="本地文件头"></a>本地文件头</h4><ul>
+<li>本地文件头具有由多字节值组成的特定字段结构。所有值都以小端字节顺序存储，其中字段长度以字节为单位计算长度。ZIP 文件中的所有结构对每个文件条目使用 4 字节签名。中央目录签名的末尾是0x06054b50的，可以使用其自己的唯一签名进行区分。以下是存储在本地文件头中的信息顺序。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>index</th>
+<th>长度</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>4</td>
+<td>本地文件头签名 0x04034b50（读作小端数）</td>
+</tr>
+<tr>
+<td>4</td>
+<td>2</td>
+<td>提取所需的版本（最低）</td>
+</tr>
+<tr>
+<td>6</td>
+<td>2</td>
+<td>通用位标志</td>
+</tr>
+<tr>
+<td>8</td>
+<td>2</td>
+<td>压缩方式</td>
+</tr>
+<tr>
+<td>10</td>
+<td>2</td>
+<td>文件上次修改时间</td>
+</tr>
+<tr>
+<td>12</td>
+<td>2</td>
+<td>文件上次修改日期</td>
+</tr>
+<tr>
+<td>14</td>
+<td>4</td>
+<td>CRC-32使用“幻数”0xdebb20e3(小端)计算文件数据的值</td>
+</tr>
+<tr>
+<td>18</td>
+<td>4</td>
+<td>压缩尺寸[如果存档为ZIP64格式，则该文件为0xffffffff，长度存储在额外字段中]</td>
+</tr>
+<tr>
+<td>22</td>
+<td>4</td>
+<td>未压缩大小[如果存档为ZIP64格式，则该文件为0xffffffff，长度存储在额外字段中]</td>
+</tr>
+<tr>
+<td>26</td>
+<td>2</td>
+<td>文件名长度 （n）</td>
+</tr>
+<tr>
+<td>28</td>
+<td>2</td>
+<td>额外字段长度（m）</td>
+</tr>
+<tr>
+<td>30</td>
+<td>n</td>
+<td>文件名[文件的名称，包括一个可选的相对路径。路径中的所有斜杠都应该是正斜杠“&#x2F;”]</td>
+</tr>
+<tr>
+<td>30+n</td>
+<td>m</td>
+<td>额外字段[用于存储附加信息。字段由标头和数据对的序列组成，其中标头具有2字节标识符和2字节数据大小字段]</td>
+</tr>
+</tbody></table>
+<ul>
+<li>通用位标志<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Bit 00: encrypted file</span><br><span class="line">Bit 01: compression option</span><br><span class="line">Bit 02: compression option</span><br><span class="line">Bit 03: data descriptor</span><br><span class="line">Bit 04: enhanced deflation</span><br><span class="line">Bit 05: compressed patched data</span><br><span class="line">Bit 06: strong encryption</span><br><span class="line">Bit 07-10: unused</span><br><span class="line">Bit 11: language encoding</span><br><span class="line">Bit 12: reserved</span><br><span class="line">Bit 13: mask header values</span><br><span class="line">Bit 14-15: reserved</span><br></pre></td></tr></table></figure></li>
+<li>压缩方式 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">00: no compression</span><br><span class="line">01: shrunk</span><br><span class="line">02: reduced with compression factor 1</span><br><span class="line">03: reduced with compression factor 2</span><br><span class="line">04: reduced with compression factor 3</span><br><span class="line">05: reduced with compression factor 4</span><br><span class="line">06: imploded</span><br><span class="line">07: reserved</span><br><span class="line">08: deflated</span><br><span class="line">09: enhanced deflated</span><br><span class="line">10: PKWare DCL imploded</span><br><span class="line">11: reserved</span><br><span class="line">12: compressed using BZIP2</span><br><span class="line">13: reserved</span><br><span class="line">14: LZMA</span><br><span class="line">15-17: reserved</span><br><span class="line">18: compressed using IBM TERSE</span><br><span class="line">19: IBM LZ77 z</span><br><span class="line">98: PPMd version I, Rev 1</span><br></pre></td></tr></table></figure></li>
+<li>文件上次修改时间<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">stored in standard MS-DOS format:</span><br><span class="line">Bits 00-04: seconds divided by 2</span><br><span class="line">Bits 05-10: minute</span><br><span class="line">Bits 11-15: hour</span><br></pre></td></tr></table></figure></li>
+<li>文件上次修改日期<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">stored in standard MS-DOS format:</span><br><span class="line">Bits 00-04: day</span><br><span class="line">Bits 05-08: month</span><br><span class="line">Bits 09-15: years from 1980</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="中央目录文件头"><a href="#中央目录文件头" class="headerlink" title="中央目录文件头"></a>中央目录文件头</h4><table>
+<thead>
+<tr>
+<th>index</th>
+<th>长度</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>4</td>
+<td>中央目录文件头签名 # 0x02014b50</td>
+</tr>
+<tr>
+<td>4</td>
+<td>2</td>
+<td>版本制作者</td>
+</tr>
+<tr>
+<td>6</td>
+<td>2</td>
+<td>提取所需的版本（最低）</td>
+</tr>
+<tr>
+<td>8</td>
+<td>2</td>
+<td>通用位标志</td>
+</tr>
+<tr>
+<td>10</td>
+<td>2</td>
+<td>压缩方式</td>
+</tr>
+<tr>
+<td>12</td>
+<td>2</td>
+<td>文件上次修改时间</td>
+</tr>
+<tr>
+<td>14</td>
+<td>2</td>
+<td>文件上次修改日期</td>
+</tr>
+<tr>
+<td>16</td>
+<td>4</td>
+<td>crc-32</td>
+</tr>
+<tr>
+<td>20</td>
+<td>4</td>
+<td>压缩尺寸</td>
+</tr>
+<tr>
+<td>24</td>
+<td>4</td>
+<td>未压缩大小</td>
+</tr>
+<tr>
+<td>28</td>
+<td>2</td>
+<td>文件名长度 （n）</td>
+</tr>
+<tr>
+<td>30</td>
+<td>2</td>
+<td>额外字段长度（m）</td>
+</tr>
+<tr>
+<td>32</td>
+<td>2</td>
+<td>文件注释长度 （k）</td>
+</tr>
+<tr>
+<td>34</td>
+<td>2</td>
+<td>文件开始的磁盘编号</td>
+</tr>
+<tr>
+<td>36</td>
+<td>2</td>
+<td>内部文件属性</td>
+</tr>
+<tr>
+<td>38</td>
+<td>4</td>
+<td>外部文件属性</td>
+</tr>
+<tr>
+<td>42</td>
+<td>4</td>
+<td>本地文件头的相对偏移量。这是文件所在的第一个磁盘的开始与本地文件头的开始之间的字节数。这允许读取中央目录的软件在 ZIP 文件中定位文件的位置。</td>
+</tr>
+<tr>
+<td>46</td>
+<td>n</td>
+<td>文件名</td>
+</tr>
+<tr>
+<td>46+n</td>
+<td>m</td>
+<td>额外字段</td>
+</tr>
+<tr>
+<td>46+n+m</td>
+<td>k</td>
+<td>文件注释</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>版本制作者</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">upper byte:</span><br><span class="line">0 - MS-DOS and OS/2 (FAT / VFAT / FAT32 file systems)</span><br><span class="line">1 - Amiga</span><br><span class="line">2 - OpenVMS</span><br><span class="line">3 - UNIX</span><br><span class="line">4 - VM/CMS</span><br><span class="line">5 - Atari ST</span><br><span class="line">6 - OS/2 H.P.F.S.</span><br><span class="line">7 - Macintosh</span><br><span class="line">8 - Z-System</span><br><span class="line">9 - CP/M</span><br><span class="line">10 - Windows NTFS</span><br><span class="line">11 - MVS (OS/390 - Z/OS)</span><br><span class="line">12 - VSE</span><br><span class="line">13 - Acorn Risc</span><br><span class="line">14 - VFAT</span><br><span class="line">15 - alternate MVS</span><br><span class="line">16 - BeOS</span><br><span class="line">17 - Tandem</span><br><span class="line">18 - OS/400</span><br><span class="line">19 - OS/X (Darwin)</span><br><span class="line">20 - 255: unused</span><br><span class="line"></span><br><span class="line">lower byte:</span><br><span class="line">zip specification version</span><br></pre></td></tr></table></figure></li>
+<li><p>通用位标志</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Bit 00: encrypted file</span><br><span class="line">Bit 01: compression option</span><br><span class="line">Bit 02: compression option</span><br><span class="line">Bit 03: data descriptor</span><br><span class="line">Bit 04: enhanced deflation</span><br><span class="line">Bit 05: compressed patched data</span><br><span class="line">Bit 06: strong encryption</span><br><span class="line">Bit 07-10: unused</span><br><span class="line">Bit 11: language encoding</span><br><span class="line">Bit 12: reserved</span><br><span class="line">Bit 13: mask header values</span><br><span class="line">Bit 14-15: reserved</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>压缩方式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">00: no compression</span><br><span class="line">01: shrunk</span><br><span class="line">02: reduced with compression factor 1</span><br><span class="line">03: reduced with compression factor 2</span><br><span class="line">04: reduced with compression factor 3</span><br><span class="line">05: reduced with compression factor 4</span><br><span class="line">06: imploded</span><br><span class="line">07: reserved</span><br><span class="line">08: deflated</span><br><span class="line">09: enhanced deflated</span><br><span class="line">10: PKWare DCL imploded</span><br><span class="line">11: reserved</span><br><span class="line">12: compressed using BZIP2</span><br><span class="line">13: reserved</span><br><span class="line">14: LZMA</span><br><span class="line">15-17: reserved</span><br><span class="line">18: compressed using IBM TERSE</span><br><span class="line">19: IBM LZ77 z</span><br><span class="line">98: PPMd version I, Rev 1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>内部文件属性</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Bit 0: apparent ASCII/text file</span><br><span class="line">Bit 1: reserved</span><br><span class="line">Bit 2: control field records precede logical records</span><br><span class="line">Bits 3-16: unused</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="中央目录记录结束"><a href="#中央目录记录结束" class="headerlink" title="中央目录记录结束"></a>中央目录记录结束</h4><table>
+<thead>
+<tr>
+<th>index</th>
+<th>长度</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>4</td>
+<td>中央目录签名结束 # 0x06054b50</td>
+</tr>
+<tr>
+<td>4</td>
+<td>2</td>
+<td>此磁盘的编号</td>
+</tr>
+<tr>
+<td>6</td>
+<td>2</td>
+<td>中央目录启动的磁盘</td>
+</tr>
+<tr>
+<td>8</td>
+<td>2</td>
+<td>此磁盘上的中央目录记录数</td>
+</tr>
+<tr>
+<td>10</td>
+<td>2</td>
+<td>中央目录记录总数</td>
+</tr>
+<tr>
+<td>12</td>
+<td>4</td>
+<td>中央目录的大小（字节）</td>
+</tr>
+<tr>
+<td>16</td>
+<td>4</td>
+<td>中央目录开始的偏移量，相对于存档的开始</td>
+</tr>
+<tr>
+<td>20</td>
+<td>2</td>
+<td>注释长度 （n）</td>
+</tr>
+<tr>
+<td>22</td>
+<td>n</td>
+<td>评论</td>
+</tr>
+</tbody></table>
+</div><!--!--></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3><div class="buttons is-centered"><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>支付宝</span><span class="qrcode"><img src="/" alt="支付宝"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/essay/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">数字电路</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/essay/Markdown-%E8%AF%AD%E6%B3%95/"><span class="level-item">Markdown 语法</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'http://example.com/essay/zip%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F/';
+            this.page.identifier = 'essay/zip文件格式/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'lp' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="lgtbp"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">lgtbp</p><p class="is-size-6 is-block">lp</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>location</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">4</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">0</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/lgtbp" target="_blank" rel="noopener">关注我</a></div></div></div><!--!--><!--!--><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2020-12-31T17:00:00.000Z">2021-01-01</time></p><p class="title"><a href="/essay/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%B8%B8%E7%94%A8%E5%BA%93/">嵌入式常用库</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2020-12-31T16:00:02.000Z">2021-01-01</time></p><p class="title"><a href="/essay/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/">数字电路</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2020-12-31T16:00:01.000Z">2021-01-01</time></p><p class="title"><a href="/essay/zip%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F/">zip文件格式</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2020-12-31T16:00:00.000Z">2021-01-01</time></p><p class="title"><a href="/essay/Markdown-%E8%AF%AD%E6%B3%95/">Markdown 语法</a></p></div></article></div></div><!--!--></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="lgtbp" height="28"></a><p class="is-size-7"><span>&copy; 2023 lgtbp@126.com</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p><p class="is-size-7">Copyright © 2004 - 2023  lgtbp 版权所有</p></div><div class="level-end"></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
